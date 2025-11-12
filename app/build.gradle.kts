@@ -1,7 +1,6 @@
 plugins {
     kotlin("jvm")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
     application
 }
 
@@ -10,7 +9,7 @@ application {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
     /** Koog */
     implementation("ai.koog:koog-agents:0.5.2")
@@ -35,6 +34,9 @@ dependencies {
     /** Environment Variables */
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 
+    /** CLI */
+    implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.6")
+
     /** Tests */
     testImplementation(kotlin("test"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
@@ -55,31 +57,6 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "com.github.rcd27.koogselfresearch.MainKt"
-    }
-    configurations["compileClasspath"].forEach { file: File ->
-        from(zipTree(file.absoluteFile))
-    }
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
-
-tasks {
-    shadowJar {
-        archiveBaseName.set("koog-self-research")
-        archiveClassifier.set("")
-        archiveVersion.set("")
-
-        // Merge service files for OpenTelemetry
-        mergeServiceFiles()
-
-        manifest {
-            attributes["Main-Class"] = "MainKt"
-        }
-    }
-
-    build {
-        dependsOn(shadowJar)
-    }
+application {
+    mainClass.set("com.github.rcd27.koogselfresearch.MainKt")
 }

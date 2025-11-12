@@ -1,15 +1,65 @@
 # koog-self-research
 Agent that makes research about its own capabilities
 
-# Roadmap
-`(List<Tool>) -> List<Skill>`
-* Accept a list of Tools, validate
-* Scan given tools, make a brief report for each tool 
-* Find "matching tools"(the ones that return/need same data)
-* High-level overview about probable tasks for "matching tools"
-* Delegate for researchers
-* Summarize each research
-* Fold researches to skills (List<Research> -> List<Skill>)
+## Configuration File Format
 
-## Definition of Done
-* 80%+ evaluation test result for predefined available tools and agent capabilities 
+The configuration file must be in JSON format and contain an `mcpServers` object with server descriptions:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "CONTEXT7_API_KEY"]
+    },
+    "another-server": {
+      "command": "node",
+      "args": ["server.js", "--port", "3000"]
+    }
+  }
+}
+```
+
+### Configuration Structure
+
+- **`mcpServers`** (object) - root object containing the list of servers
+    - **`server-name`** (string) - unique server name (key)
+        - **`command`** (string) - command to launch the process (e.g., `npx`, `node`, `python`)
+        - **`args`** (array of strings) - command-line arguments for the command
+
+### Example Configuration
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "YOUR_API_KEY"]
+    }
+  }
+}
+```
+
+## Build
+
+```bash
+./gradlew build
+```
+
+## Run
+
+### Default mode
+```
+./gradlew run --args="../config/mcp-servers.json"
+```
+
+### Optional verbose mode
+```
+./gradlew run --args="../config/mcp-servers.json -v"
+```
+
+### Help
+```
+./gradlew run --args="--help"
+```
+
