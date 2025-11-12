@@ -1,6 +1,6 @@
 # Roadmap
 `(List<Tool>) -> List<Skill>`
-* Accept a list of Tools, validate
+* ~~Accept a list of Tools, validate~~
 * Scan given tools, make a brief report for each tool 
 * Find "matching tools"(the ones that return/need same data)
 * High-level overview about probable tasks for "matching tools"
