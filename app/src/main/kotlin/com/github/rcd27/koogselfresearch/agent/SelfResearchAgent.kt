@@ -15,7 +15,7 @@ object SelfResearchAgent {
     val agentConfig = AIAgentConfig.withSystemPrompt(
         prompt = "You are deep research agent",
         maxAgentIterations = 100,
-        llm = OpenAIModels.CostOptimized.GPT4oMini // TODO: check model in langchain implementation
+        llm = OpenAIModels.Chat.GPT5 // <<< FIXME: GPT5 FOR ALL?
     )
 
     suspend inline fun <reified INPUT, reified OUTPUT> create(

@@ -10,8 +10,8 @@ import java.io.File
 class ToolRegistryBriefEvaluation {
 
     @Test
-    fun x() = runBlocking {
-        val tools = File("./src/test/resources/mcp.json").parseTools()
+    fun `Dummy output checkout`() = runBlocking {
+        val tools = File("./src/test/resources/mcp-servers.json").parseTools()
         val agent = SelfResearchAgent.create(
             tools = tools,
             strategy = standaloneLLMToolsBrief()
