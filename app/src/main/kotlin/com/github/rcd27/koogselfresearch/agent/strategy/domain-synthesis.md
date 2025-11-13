@@ -1,39 +1,3 @@
-package com.github.rcd27.koogselfresearch.agent.strategy
-
-import ai.koog.agents.core.agent.context.DetachedPromptExecutorAPI
-import ai.koog.agents.core.dsl.builder.AIAgentSubgraphBuilderBase
-import ai.koog.agents.core.dsl.builder.AIAgentSubgraphDelegate
-import ai.koog.agents.core.dsl.builder.forwardTo
-import ai.koog.agents.core.dsl.builder.strategy
-import ai.koog.agents.core.dsl.extension.nodeLLMRequest
-import ai.koog.agents.core.dsl.extension.onAssistantMessage
-import ai.koog.agents.core.tools.serialization.serializeToolDescriptorsToJsonString
-
-fun standaloneLLMToolsBrief() = strategy<String, String>("llm_tools_brief") {
-    val toolRegistryBrief by subgraphLLMToolsBrief()
-    nodeStart then toolRegistryBrief then nodeFinish
-}
-
-// FIXME: in current implementation we look at WHOLE llm.tools. What if there are hundreds of tools?
-// FIXME: shift to structured output
-// FIXME: 2 MCP servers gave 2m waiting time with very deep analysis regarding their DOMAINS
-// TODO: provide response schemas for Tools outputs
-@OptIn(DetachedPromptExecutorAPI::class)
-fun AIAgentSubgraphBuilderBase<*, *>.subgraphLLMToolsBrief(): AIAgentSubgraphDelegate<String, String> =
-    subgraph("tool_registry_brief") {
-        val extractToolDescriptors by node<String, String>("extract_tool_descriptors") { input ->
-            return@node serializeToolDescriptorsToJsonString(this.llm.tools)
-        }
-
-        val requestLLM by nodeLLMRequest("descriptors_brief", allowToolCalls = false)
-
-        nodeStart then extractToolDescriptors
-
-        edge(
-            extractToolDescriptors forwardTo requestLLM
-                transformed { extractedToolDescriptors ->
-                    println(extractedToolDescriptors) // TODO: remove
-                    """
 <task>
 You are analyzing the agent's available tools to generate a high-level summary of capabilities for self-discovery and skill generation purposes.
 
@@ -169,7 +133,7 @@ If Domain A has text fields AND Domain B has entity lookup:
 - Query Domain B with extracted entities
 - Enrich Domain A operations with Domain B data
 
-### Pattern B: Taxonomy Classification Bridge  
+### Pattern B: Taxonomy Classification Bridge
 If Domain A has classification/categories AND Domain B has unstructured content:
 - Classify Domain B content using Domain A taxonomy
 - Aggregate by category to find patterns
@@ -195,7 +159,7 @@ Every compound/synthetic/strategic story MUST include concrete metrics:
 
 ✅ GOOD metrics (specific, measurable, time-bound):
 - "Reduce metric from X to Y within Z timeframe"
-- "Process N items in <T time"  
+- "Process N items in <T time"
 - "Detect patterns using threshold T (e.g., ratio > 2.0, count > 100)"
 - "Improve rate from X% to Y% per period"
 - "Reduce volume by Z% over timeframe"
@@ -208,7 +172,7 @@ Every compound/synthetic/strategic story MUST include concrete metrics:
 
 **Metric components:**
 - Baseline: current state with number
-- Target: goal state with number  
+- Target: goal state with number
 - Timeframe: when target is achieved
 - Mechanism: how improvement is measured
 
@@ -349,15 +313,15 @@ Before generating output, verify ALL of these:
 □ **Cross-Domain Mandatory**: At least 2 synthetic stories combine different domains
 □ **High Utilization**: ≥80% of provided tools incorporated (aim for 100%)
 □ **Mechanism Specificity**: Every "by [mechanism]" includes:
-  - Tool parameters (e.g., `param=value`)
-  - Transformation logic (e.g., `regex: /pattern/`, `aggregation: sum/count`)
-  - Thresholds (e.g., `if X > Y`, `when rate < Z%`)
-□ **Measurability**: Every compound+ story has metrics with baseline→target→timeframe
-□ **Data Flow Validity**: Verified compatibility between source output and destination input
-□ **Constraint Awareness**: Rate limits and constraints explicitly handled
-□ **No Vague Verbs**: No "enhance", "improve", "optimize" without specifics
-□ **Realistic Only**: No capabilities requiring functionality not present in tools
-□ **Synthesis Patterns**: Each synthetic story maps to a recognized pattern
+- Tool parameters (e.g., `param=value`)
+- Transformation logic (e.g., `regex: /pattern/`, `aggregation: sum/count`)
+- Thresholds (e.g., `if X > Y`, `when rate < Z%`)
+  □ **Measurability**: Every compound+ story has metrics with baseline→target→timeframe
+  □ **Data Flow Validity**: Verified compatibility between source output and destination input
+  □ **Constraint Awareness**: Rate limits and constraints explicitly handled
+  □ **No Vague Verbs**: No "enhance", "improve", "optimize" without specifics
+  □ **Realistic Only**: No capabilities requiring functionality not present in tools
+  □ **Synthesis Patterns**: Each synthetic story maps to a recognized pattern
 
 If ANY checkbox fails, revise until all pass.
 </validation_checklist>
@@ -381,7 +345,7 @@ So that I reduce time-to-resolution from X hours to Y hours and prevent Z% of fo
 
 **This shows:**
 - No hardcoded domains ✓
-- Exact tool parameters ✓  
+- Exact tool parameters ✓
 - Clear algorithms (ratio formula, regex) ✓
 - Data flow between domains ✓
 - Measurable outcomes ✓
@@ -403,13 +367,4 @@ Think step-by-step:
 3. Design realistic cross-domain mechanisms
 4. Validate every capability against actual tool specifications
 5. Ensure all metrics are measurable with baselines and targets
-</critical_reminders>
-                    """.trimIndent()
-                }
-        )
-
-        edge(
-            requestLLM forwardTo nodeFinish
-                onAssistantMessage { true }
-        )
-    }
+   </critical_reminders>
