@@ -1,15 +1,18 @@
 {
   "mcpServers":
   {
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp", "--api-key", "CONTEXT7_API_KEY"]
-    },
     "wildberries-communications-mcp": {
       "command": "node",
       "args": [
         "/home/tochka2883/Workspace/MCP/wildberries-communications-mcp-server/build/index.js",
         "--apiKey=$WILDBERRIES_COMMUNICATIONS_API_KEY"
+      ]
+    },
+    "wildberries-analytics-mcp": {
+      "command": "node",
+      "args": [
+        "/home/tochka2883/Workspace/MCP/wildberries-analytics-mcp-server/build/index.js",
+        "--apiKey=$WILDBERRIES_ANALYTICS_API_KEY"
       ]
     }
   }
