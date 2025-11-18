@@ -16,7 +16,7 @@ class ToolRegistryBriefEvaluation {
             tools = tools,
             strategy = standaloneLLMToolsBrief()
         )
-        val output = agent.run("What tools do you have?")
+        val output = agent.run("Output in RUSSIAN language")
         println(output)
     }
 }
